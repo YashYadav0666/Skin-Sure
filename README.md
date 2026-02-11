@@ -100,7 +100,7 @@ SkinSure/
 
 1\. Clone the repository:
 
-git clone https://github.com/YOUR\_USERNAME/Skin-Sure.git
+git clone https://github.com/YashYadav0666/Skin-Sure.git
 
 
 
