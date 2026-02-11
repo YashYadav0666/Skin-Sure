@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 print("Loading model...")
-model = tf.keras.models.load_model("skin_model.h5")
+model = tf.keras.models.load_model("skin_model.keras")
 print("Model loaded successfully!")
 
 classes = ["acne", "blackheads", "normal", "redness", "whiteheads"]
