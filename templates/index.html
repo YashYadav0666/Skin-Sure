@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Care Prediction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .upload-section {
+            margin-bottom: 30px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* input[type="file"] {
+    display: none;
+} */
+        /* Chatbot toggle button */
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Chat window */
+        #chatbot {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 280px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #chat-body {
+            height: 220px;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input input {
+            flex: 1;
+            border: none;
+            padding: 8px;
+        }
+
+        .chat-input button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .bot {
+            background: #f1f1f1;
+            padding: 6px 8px;
+            margin: 5px 0;
+            border-radius: 6px;
+        }
+
+        .user {
+            text-align: right;
+            margin: 5px 0;
+        }
+
+
+
+        .upload-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            color: white;
+        }
+
+        /* Choose Image button */
+        .file-btn {
+            background-color: #667eea;
+        }
+
+        .file-btn:hover {
+            background-color: #5568d3;
+        }
+
+        /* Camera button */
+        .camera-btn {
+            background-color: #0cc6db;
+        }
+
+        .camera-btn:hover {
+            background-color: #653a8a;
+        }
+
+        .custom-file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #667eea;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .file-label:hover {
+            background-color: #5568d3;
+        }
+
+
+        .file-input-label {
+            display: block;
+            padding: 15px 20px;
+            background-color: #667eea;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .file-input-label:hover {
+            background-color: #5568d3;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #764ba2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+
+        .submit-btn:hover {
+            background-color: #653a8a;
+        }
+
+        .result-section {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            color: #667eea;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: capitalize;
+        }
+
+        .advice-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .advice-text {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 10px;
+            background-color: white;
+            border-left: 4px solid #667eea;
+            border-radius: 3px;
+        }
+
+        .error {
+            color: #d32f2f;
+            padding: 10px;
+            background-color: #ffebee;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .result-card {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+            background: #f9f9fb;
+            border-radius: 12px;
+            padding: 25px;
+            flex-wrap: wrap;
+        }
+
+        .result-left {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .result-image {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .result-right {
+            flex: 2;
+            min-width: 260px;
+        }
+
+        .condition-title {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 5px;
+            text-transform: capitalize;
+        }
+
+        .confidence-text {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .info-box {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box.warning {
+            border-left-color: #ff9800;
+        }
+
+        .info-box.disclaimer {
+            border-left-color: #e53935;
+            font-size: 13px;
+            background: #fff5f5;
+        }
+
+        .grid {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            flex: 1;
+            min-width: 150px;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .do-box {
+            border-left: 4px solid #4caf50;
+        }
+
+        .avoid-box {
+            border-left: 4px solid #e53935;
+        }
+
+        ul {
+            padding-left: 18px;
+        }
+
+        .doctor-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .doctor-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 18px;
+            background: #667eea;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .doctor-btn:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        
+        <h1 style="font-size:36px; margin-bottom:5px;">
+           🩺SkinSure
+        </h1>
+
+        <p class="subtitle" style="font-size:16px; font-weight:500;">
+            Your Personal AI Skin Care Assistant
+        </p>
+        <p class="subtitle">Upload a close-up image of your skin to get personalized advice</p>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="upload-row">
+                <input type="file" id="imageInput" name="image" accept="image/*" hidden>
+
+                <label for="imageInput" class="btn file-btn">
+                    📷 Choose Image
+                </label>
+
+                <button type="button" class="btn camera-btn" onclick="openCamera()">
+                    📸 Open Camera
+                </button>
+            </div>
+
+
+            <div class="file-name" id="fileName"></div>
+
+            <img id="preview" style="display:none; max-width:220px; margin:15px auto; border-radius:8px;">
+
+            <button type="submit" class="submit-btn">
+                Analyze Skin
+            </button>
+        </form>
+
+        <!-- Camera preview -->
+        <div id="cameraBox" style="display:none; text-align:center; margin-top:15px;">
+            <video id="camera" width="260" autoplay style="border-radius:10px;"></video>
+            <br><br>
+            <button type="button" class="submit-btn" onclick="capturePhoto()">
+                Capture Photo
+            </button>
+        </div>
+
+        <canvas id="canvas" style="display:none;"></canvas>
+
+
+
+        {% if result %}
+        <div class="result-section show">
+
+            <h3 style="margin-bottom:15px;">Your Skin Analysis</h3>
+
+            <!-- Image -->
+            <img src="{{ image_path }}" style="max-width:220px; border-radius:10px; margin-bottom:15px;">
+
+            <!-- Main result -->
+            <div class="result-label">Detected Skin Condition:</div>
+            <div class="result-value">{{ result }}</div>
+
+            <div class="result-label">Confidence:</div>
+            <div class="result-value" style="font-size:18px;">
+                {{ confidence }}%
+            </div>
+
+            <!-- Confidence graph -->
+            <!-- Confidence graph -->
+            <div class="result-label" style="margin-top:20px;">
+                Condition Confidence:
+            </div>
+
+            {% for condition, value in confidences.items() %}
+            <div style="margin-bottom:10px;">
+                <div style="font-size:14px;">
+                    {{ condition }} – {{ value }}%
+                </div>
+
+                <div style="background:#ddd; height:8px; border-radius:5px;">
+                    <div style="width: {{ value|int }}%; height:8px; border-radius:5px; background:#667eea;"></div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+
+
+            <!-- Detailed report -->
+            <h4 style="margin-top:25px;">Your detailed report:</h4>
+
+            <div class="info-box">
+                <strong>Why it happens:</strong>
+                <p>{{ info.reason }}</p>
+            </div>
+
+            <div class="info-box">
+                <strong>Do:</strong>
+                <ul>
+                    {% for item in info.do %}
+                    <li>✔ {{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>Avoid:</strong>
+                <ul>
+                    {% for item in info.avoid %}
+                    <li>✘ {{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>Medications:</strong>
+                <ul>
+                    {% for item in info.meds %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="info-box warning">
+                <strong>See a doctor if:</strong>
+                <p>{{ info.doctor }}</p>
+            </div>
+
+            <div class="info-box disclaimer">
+                This system is for early screening only.
+                It may make mistakes. If you feel burning,
+                pain, or irritation, consult a dermatologist.
+            </div>
+
+        </div>
+        <!-- Doctor finder -->
+        <div class="doctor-box">
+            <h4>Need professional help?</h4>
+            <p>If symptoms persist, consult a nearby dermatologist.</p>
+
+            <a href="https://www.google.com/maps/search/dermatologist+near+me" target="_blank" class="doctor-btn">
+                Find Dermatologist Near Me
+            </a>
+        </div>
+
+        {% endif %}
+
+
+
+
+        <script>
+            window.onload = function () {
+                const imageInput = document.getElementById('imageInput');
+
+                if (imageInput) {
+                    imageInput.addEventListener('change', function (e) {
+                        const file = e.target.files[0];
+                        const fileName = file?.name || '';
+                        document.getElementById('fileName').textContent =
+                            fileName ? `Selected: ${fileName}` : '';
+
+                        if (file) {
+                            const preview = document.getElementById('preview');
+                            preview.src = URL.createObjectURL(file);
+                            preview.style.display = "block";
+                        }
+                    });
+                }
+
+                const bars = document.querySelectorAll(".bar");
+                bars.forEach(bar => {
+                    const width = bar.getAttribute("data-width");
+                    if (width) {
+                        bar.style.width = width + "%";
+                    }
+                });
+            };
+            function openCamera() {
+                const input = document.getElementById('imageInput');
+                input.setAttribute("capture", "environment");
+                input.click();
+            }
+
+            let stream;
+
+            function openCamera() {
+                const cameraBox = document.getElementById("cameraBox");
+                const video = document.getElementById("camera");
+
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(s => {
+                        stream = s;
+                        video.srcObject = stream;
+                        cameraBox.style.display = "block";
+                    })
+                    .catch(err => {
+                        alert("Camera access denied or not available.");
+                    });
+            }
+
+            function capturePhoto() {
+                const video = document.getElementById("camera");
+                const canvas = document.getElementById("canvas");
+                const input = document.getElementById("imageInput");
+
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(video, 0, 0);
+
+                canvas.toBlob(function (blob) {
+                    const file = new File([blob], "capture.jpg", { type: "image/jpeg" });
+
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    input.files = dataTransfer.files;
+
+                    document.getElementById("preview").src = URL.createObjectURL(file);
+                    document.getElementById("preview").style.display = "block";
+                });
+
+                // Stop camera
+                stream.getTracks().forEach(track => track.stop());
+                document.getElementById("cameraBox").style.display = "none";
+            }
+            function toggleChatbot() {
+                const bot = document.getElementById("chatbot");
+                bot.style.display = bot.style.display === "flex" ? "none" : "flex";
+            }
+
+            function sendMessage() {
+                const input = document.getElementById("userInput");
+                const chatBody = document.getElementById("chat-body");
+                const text = input.value.toLowerCase();
+
+                if (!text) return;
+
+                // user message
+                chatBody.innerHTML += `<div class="user">${input.value}</div>`;
+
+                let reply = "Please keep your skin clean and hydrated.";
+
+                if (text.includes("acne")) {
+                    reply = "Use salicylic acid face wash and avoid touching pimples.";
+                }
+                else if (text.includes("whitehead")) {
+                    reply = "Use gentle exfoliation and salicylic acid products.";
+                }
+                else if (text.includes("blackhead")) {
+                    reply = "Try clay masks and oil-free skincare.";
+                }
+                else if (text.includes("redness")) {
+                    reply = "Use soothing moisturizer and avoid harsh products.";
+                }
+                else if (text.includes("doctor")) {
+                    reply = "If symptoms persist, consult a dermatologist.";
+                }
+
+                // bot reply
+                chatBody.innerHTML += `<div class="bot">${reply}</div>`;
+
+                input.value = "";
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+
+
+        </script>
+        <!-- Chatbot Button -->
+        <div id="chatbot-toggle" onclick="toggleChatbot()">💬</div>
+
+        <!-- Chatbot Window -->
+        <div id="chatbot">
+            <div class="chat-header">
+                Skin Assistant
+                <span onclick="toggleChatbot()">✖</span>
+            </div>
+
+            <div id="chat-body"></div>
+
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Ask about your skin...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+
+
+</body>
+
+</html>
